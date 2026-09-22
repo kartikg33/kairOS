@@ -48,12 +48,12 @@ apt-get install -y \
     curl \
     git \
     gpg \
-    mksquashfs \
     python3 \
     python3-debian \
     python3-pip \
     python3-venv \
     python3-yaml \
+    squashfs-tools \
     xorriso
 
 # ---------------------------------------------------------------------------
@@ -61,30 +61,27 @@ apt-get install -y \
 # ---------------------------------------------------------------------------
 
 read_config() {
-    python3 - "$CONFIG_FILE" "$ARCH" "$1" <<'PY'
+    local key="$1"
+
+    python3 - "$CONFIG_FILE" "$ARCH" "$key" <<'PY'
 import sys
 import yaml
 
 config_file = sys.argv[1]
 arch = sys.argv[2]
-path = sys.argv[3].split(".")
+key = sys.argv[3]
 
 with open(config_file, "r", encoding="utf-8") as f:
     config = yaml.safe_load(f)
 
-value = config
-
-for part in path:
-    value = value[part]
-
-if isinstance(value, dict) and arch in value:
-    value = value[arch]
+artifact = config["base"][arch]
+value = artifact[key]
 
 if value is None:
-    raise SystemExit("Configuration value is empty")
+    raise SystemExit(f"Configuration value is empty: base.{arch}.{key}")
 
 if not isinstance(value, str):
-    raise SystemExit(f"Configuration value is not a string: {sys.argv[3]}")
+    raise SystemExit(f"Configuration value is not a string: base.{arch}.{key}")
 
 print(value)
 PY
