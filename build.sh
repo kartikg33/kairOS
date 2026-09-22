@@ -217,6 +217,7 @@ PY
 
 resolve_openchamber() {
     local release_url="$1"
+    local release_json="${WORK_DIR}/openchamber-release.json"
 
     curl \
         --fail \
@@ -225,24 +226,28 @@ resolve_openchamber() {
         --retry-delay 5 \
         -sS \
         -H "Accept: application/vnd.github+json" \
-        "$release_url" \
-        | python3 - "$ARCH" <<'PY'
+        -o "$release_json" \
+        "$release_url"
+
+    python3 - "$release_json" "$ARCH" <<'PY'
 import json
 import sys
 
-arch = sys.argv[1]
+release_file = sys.argv[1]
+arch = sys.argv[2]
 
 patterns = {
-    "amd64": ("linux-x64.AppImage",),
-    "arm64": ("linux-arm64.AppImage",),
+    "amd64": "linux-x64.AppImage",
+    "arm64": "linux-arm64.AppImage",
 }
 
-release = json.load(sys.stdin)
+with open(release_file, "r", encoding="utf-8") as f:
+    release = json.load(f)
+
+pattern = patterns[arch]
 
 for asset in release.get("assets", []):
-    name = asset["name"]
-
-    if name.endswith(patterns[arch]):
+    if asset["name"].endswith(pattern):
         print(asset["browser_download_url"])
         break
 else:
