@@ -87,8 +87,8 @@ print(value)
 PY
 }
 
-BASE_URL="$(read_config base.url)"
-BASE_SHA256="$(read_config base.sha256)"
+BASE_URL="$(read_config url)"
+BASE_SHA256="$(read_config sha256)"
 
 BASE_ISO="${WORK_DIR}/ubuntu.iso"
 
