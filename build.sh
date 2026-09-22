@@ -80,10 +80,10 @@ apt-get install -y \
     curl \
     git \
     gpg \
-    mksquashfs \
     python3 \
     python3-debian \
     python3-venv \
+    squashfs-tools \
     xorriso
 
 # ---------------------------------------------------------------------------
