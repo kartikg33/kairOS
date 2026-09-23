@@ -80,11 +80,17 @@ RUN openclaw plugins install @openclaw/matrix
 # Official Element Linux tarball.
 # ------------------------------------------------------------
 
-ARG ELEMENT_VERSION=1.12.0
+ARG ELEMENT_VERSION=1.12.29
+ARG TARGETARCH
 
 RUN mkdir -p /opt/element && \
-    curl -L \
-      "https://packages.element.io/desktop/install/linux/Element-${ELEMENT_VERSION}.tar.gz" \
+    case "${TARGETARCH}" in \
+        amd64) ELEMENT_ARCH="x86-64" ;; \
+        arm64) ELEMENT_ARCH="aarch64" ;; \
+        *) echo "Unsupported architecture: ${TARGETARCH}" && exit 1 ;; \
+    esac && \
+    curl -fsSL \
+      "https://packages.element.io/desktop/install/linux/glibc-${ELEMENT_ARCH}/element-desktop-${ELEMENT_VERSION}.tar.gz" \
       -o /tmp/element.tar.gz && \
     tar -xzf /tmp/element.tar.gz \
       --strip-components=1 \
