@@ -1,3 +1,6 @@
+# Copyright 2026 Kartik Gohil
+# SPDX-License-Identifier: Apache-2.0
+
 FROM fedora:latest
 
 ENV LANG=en_US.UTF-8 \
