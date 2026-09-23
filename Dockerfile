@@ -85,12 +85,12 @@ ARG TARGETARCH
 
 RUN mkdir -p /opt/element && \
     case "${TARGETARCH}" in \
-        amd64) ELEMENT_ARCH="x86-64" ;; \
-        arm64) ELEMENT_ARCH="aarch64" ;; \
+        amd64) ELEMENT_ARCH="x86-64"; ELEMENT_FILE="element-desktop-${ELEMENT_VERSION}.tar.gz" ;; \
+        arm64) ELEMENT_ARCH="aarch64"; ELEMENT_FILE="element-desktop-${ELEMENT_VERSION}-arm64.tar.gz" ;; \
         *) echo "Unsupported architecture: ${TARGETARCH}" && exit 1 ;; \
     esac && \
     curl -fsSL \
-      "https://packages.element.io/desktop/install/linux/glibc-${ELEMENT_ARCH}/element-desktop-${ELEMENT_VERSION}.tar.gz" \
+      "https://packages.element.io/desktop/install/linux/glibc-${ELEMENT_ARCH}/${ELEMENT_FILE}" \
       -o /tmp/element.tar.gz && \
     tar -xzf /tmp/element.tar.gz \
       --strip-components=1 \
