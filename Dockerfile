@@ -40,6 +40,8 @@ RUN dnf -y update && \
         libxcb \
         libxkbcommon \
         libxkbcommon-x11 \
+        novnc \
+        python3 \
     && dnf clean all \
     && rm -rf /var/cache/dnf
 
